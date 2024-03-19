@@ -24,6 +24,12 @@ services:
       context: ../poo.241.store.account-service/
       dockerfile: Dockerfile
     image: store-account:latest
+    environment:
+      # aqui estamos passando as variáveis de ambiente para o container acesso o banco dentro da rede do docker
+      # note que o "db" abaixo eh o nome do servico do banco de dados acima
+      - spring.datasource.url=jdbc:postgresql://db:5432/store
+      - spring.datasource.username=store
+      - spring.datasource.password=store
     networks:
       - espm
 
