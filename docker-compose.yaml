@@ -4,8 +4,7 @@ name: store
 
 services:
 
-  db-espm:
-    # container_name: store-db
+  db:
     image: postgres:latest
     ports:
       - 5432:5432
@@ -14,9 +13,10 @@ services:
       - POSTGRES_PASSWORD=store
       - POSTGRES_DB=store
     volumes:
-      - /volume/postgres/store  /data:/var/lib/postgresql/data
-      
+      - ./volume/postgres/store/data:/var/lib/postgresql/data
     restart: always
+    networks:
+      - projeto
 
   account:
     build:
@@ -28,8 +28,14 @@ services:
     environment:
       # aqui estamos passando as variáveis de ambiente para o container acesso o banco dentro da rede do docker
       # note que o "db" abaixo e o nome do servico do banco de dados acima
-      - spring.datasource.url=jdbc:postgresql://db-espm:5432/store
+      - spring.datasource.url=jdbc:postgresql://db:5432/store
       - spring.datasource.username=store
       - spring.datasource.password=store
     depends_on:
-      - db-espm
+      - db
+    networks:
+      - projeto
+
+networks:
+  projeto:
+    driver: bridge
